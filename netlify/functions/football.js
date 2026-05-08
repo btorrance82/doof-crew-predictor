@@ -1,9 +1,7 @@
 // netlify/functions/football.js
-// This backend function handles API calls securely
-// Your API key stays hidden here, never exposed to the browser
-
-const API_KEY = 'd3a081d743msh1f779a585fda40dp136988jen123de8cb35bf';
-const API_HOST = 'api-football-v1.p.rapidapi.com';
+// Replace YOUR_API_KEY with your football-data.org API token
+const API_KEY = '75402709cdb640ff9c7a5b8604a9e9d9';
+const API_HOST = 'api.football-data.org';
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -11,27 +9,16 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { endpoint, params } = JSON.parse(event.body);
-    
-    const url = `https://${API_HOST}${endpoint}${params}`;
+    const { endpoint } = JSON.parse(event.body);
+    const url = `https://${API_HOST}${endpoint}`;
     
     const response = await fetch(url, {
-      headers: {
-        'x-rapidapi-key': API_KEY,
-        'x-rapidapi-host': API_HOST
-      }
+      headers: { 'X-Auth-Token': API_KEY }
     });
     
     const data = await response.json();
-    
-    return {
-      statusCode: 200,
-      body: JSON.stringify(data)
-    };
+    return { statusCode: 200, body: JSON.stringify(data) };
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message })
-    };
+    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
   }
 };
